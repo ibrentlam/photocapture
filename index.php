@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/New_York');
+
 $answer = "post a photo";
 if(isset($_POST['submit'])){
 	$mydir = $_SERVER['DOCUMENT_ROOT'];
@@ -14,7 +16,26 @@ if(isset($_POST['submit'])){
 	fwrite($fp, date('r') . "\t$timestamp$name\t$caption\n");
 	fclose($fp);
 	$answer = "got it, post another if you want";
-}
+
+	/* Create new image object */
+	$image = new ZBarCodeImage("$mydir/$timestamp$name");
+	
+	/* Create a barcode scanner */
+	$scanner = new ZBarCodeScanner();
+	
+	/* Scan the image */
+	$barcode = $scanner->scan($image);
+	
+	/* Loop through possible barcodes */
+	if (empty($barcode)) {
+		$answer .= " didn't get a barcode";
+	} else {
+		foreach ($barcode as $code) {
+			$answer .= sprintf("Found type %s barcode with data %s\n", $code['type'], $code['data']);
+		}
+	}
+
+}	// end of submit
 
 ?>
 <!doctype html>
