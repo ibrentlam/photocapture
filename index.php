@@ -2,39 +2,30 @@
 
 date_default_timezone_set('America/New_York');
 
-$answer = "post a photo";
+$answer = "Post a photo";
 if(isset($_POST['submit'])){
-	$mydir = $_SERVER['DOCUMENT_ROOT'];
+	$imgdir = $_SERVER['DOCUMENT_ROOT'] . '/images';
 	$caption = $_POST['mycaption'];
 	$tmp_name = $_FILES['myimage']['tmp_name'];
         $name = basename($_FILES['myimage']['name']);
 	$timestamp=date('c');
-        if(!move_uploaded_file($tmp_name, "$mydir/$timestamp$name")){
-		die("move uploaded file from $tmp_name to $mydir/$name failed");
+        if(!move_uploaded_file($tmp_name, "$imgdir/$timestamp$name")){
+		die("move uploaded file from $tmp_name to $imgdir/$name failed");
 	}
-	$fp = fopen("$mydir/flatfile", 'a');
+	$fp = fopen("$imgdir/flatfile", 'a');
 	fwrite($fp, date('r') . "\t$timestamp$name\t$caption\n");
 	fclose($fp);
-	$answer = "got it, post another if you want";
-
-	/* Create new image object */
-	$image = new ZBarCodeImage("$mydir/$timestamp$name");
-	
-	/* Create a barcode scanner */
+	$image = new ZBarCodeImage("$imgdir/$timestamp$name");
 	$scanner = new ZBarCodeScanner();
-	
-	/* Scan the image */
 	$barcode = $scanner->scan($image);
-	
-	/* Loop through possible barcodes */
 	if (empty($barcode)) {
-		$answer .= " didn't get a barcode";
+		$answer = "Didn't get a barcode. ";
 	} else {
 		foreach ($barcode as $code) {
-			$answer .= sprintf("Found type %s barcode with data %s\n", $code['type'], $code['data']);
+			$answer = sprintf("Found type %s barcode with data %s\n", $code['type'], $code['data']);
 		}
 	}
-
+	$answer .= " Post another if you want";
 }	// end of submit
 
 ?>
