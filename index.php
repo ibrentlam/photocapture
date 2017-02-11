@@ -9,23 +9,25 @@ if(isset($_POST['submit'])){
 	$tmp_name = $_FILES['myimage']['tmp_name'];
         $name = basename($_FILES['myimage']['name']);
 	$timestamp=date('c');
-        if(!move_uploaded_file($tmp_name, "$imgdir/$timestamp$name")){
-		die("move uploaded file from $tmp_name to $imgdir/$name failed");
-	}
-	$fp = fopen("$imgdir/flatfile", 'a');
+	$fp = fopen('flatfile', 'a'); 
 	fwrite($fp, date('r') . "\t$timestamp$name\t$caption\n");
 	fclose($fp);
-	$image = new ZBarCodeImage("$imgdir/$timestamp$name");
+	$image = new ZBarCodeImage("$tmp_name");
 	$scanner = new ZBarCodeScanner();
 	$barcode = $scanner->scan($image);
 	if (empty($barcode)) {
 		$answer = "Didn't get a barcode. ";
 	} else {
 		foreach ($barcode as $code) {
-			$answer = sprintf("Found type %s barcode with data %s\n", $code['type'], $code['data']);
+			$thetype = $code['type'];
+			$thecode = $code['data'];
+			if(preg_match('/^http:/', $thecode)){
+				$thecode = '<a href="' . $thecode . '" target="_blank">' . $thecode . '</a>';
+			}
+			$answer .= sprintf("Found type %s barcode with data %s<br>\n", $thetype, $thecode);
 		}
 	}
-	$answer .= " Post another if you want";
+	$answer .= "<br>Post another if you want";
 }	// end of submit
 
 ?>
@@ -35,7 +37,7 @@ if(isset($_POST['submit'])){
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>index.php</title>
+	<title>Read a barcode</title>
  <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
