@@ -5,7 +5,6 @@ date_default_timezone_set('America/New_York');
 $answer = "Post a photo of a barcode";
 if(isset($_POST['submit'])){
 	$imgdir = $_SERVER['DOCUMENT_ROOT'] . '/images';
-	$caption = $_POST['mycaption'];
 	$tmp_name = $_FILES['myimage']['tmp_name'];
         $name = basename($_FILES['myimage']['name']);
 	$timestamp=date('c');
@@ -52,21 +51,14 @@ if(isset($_POST['submit'])){
 <div class="container">
 <h2><?php echo $answer; ?></h2>
 <form action="#" method="post" enctype="multipart/form-data">
-<div class="form-group">
 
+<div class="form-group">
 <label for="myimage">Barcode Photo:</label>
 <input type="file" id="myimage" name="myimage" accept="image/*" capture value="take photo">
+</div>
 
-<!--
-<label class="btn btn-primary btn-file">
-   Upload Barcode<input type="file" style="display: none;" id="myimage" name="myimage" accept="image/*" capture>
-</label> -->
-</div>
-<div class="form-group">
-<label for="mycaption">caption: </label>
-<input type="text" name="mycaption" id="mycaption" class="form-control"><br>
-</div>
 <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+
 </form>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
