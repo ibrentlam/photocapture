@@ -11,7 +11,8 @@ if(isset($_POST['submit'])){
 	$timestamp=date('c');
 
 	$ch = curl_init();
-	$api_token = "ZmQ3DRkYWOcCbvTv67FFSuDkUJtRpT4XYwetTam7Y7ssUfAePC0Pul0IwI34";
+
+	$api_token = getenv("API_TOKEN");
 	curl_setopt($ch, CURLOPT_URL, 'http://barcodeapi.us/api/decode');
 	curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
